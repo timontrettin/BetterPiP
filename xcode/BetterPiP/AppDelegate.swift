@@ -16,8 +16,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let menu = NSMenu()
     var launchedWithUrl = false
     
-    func application(_ application: NSApplication, open urls: [URL]) {
+    func application(_ application: NSApplication) {
         print("launched with url")
+        
+        let urls = [URL(string:"blob:https://www.youtube.com/0c91a655-dc4c-4425-a7c6-9def5bf72c9f")]
         
         launchedWithUrl = true
         
@@ -40,47 +42,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if urls.count == 0 { return }
         
         let url = urls[0]
-        guard let queryUrl: String = ((url.queryParameters?["url"]!)!).removingPercentEncoding else { return }
-        guard let startTimeString: String = (url.queryParameters?["time"]) else { return }
+        print("url")
+        guard let queryUrl = url?.absoluteString else { return }
+        
+
+        // guard let queryUrl: String = ((url?.queryParameters?["url"]!)!).removingPercentEncoding else { return }
+        // guard let startTimeString: String = (url?.queryParameters?["time"]) else { return }
         
         var startTime: Float = 0.0;
         
-        if (startTimeString != "" || startTimeString != "undefined") {
-            startTime = Float(startTimeString)!
-        }
-        
-        guard let window = NSStoryboard(name : NSStoryboard.Name(rawValue: "Main"), bundle: nil).instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "mainWindow")) as? PiPControlWindowController else { return }
+        guard let window = NSStoryboard(name : NSStoryboard.Name("Main"), bundle: nil).instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("mainWindow")) as? PiPControlWindowController else { return }
         
         //print("Received URL: \(queryUrl)")
         //print("Start at: \(startTime)")
-        
-        window.showVideo(url: URL(string: queryUrl)!, seconds: startTime)
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
 
         print("launched")
-        
-        if !launchedWithUrl {
-            print("no launch url found")
-            NSApplication.shared.terminate(nil)
-        }
-        
+        guard let window = NSStoryboard(name : NSStoryboard.Name("Main"), bundle: nil).instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("mainWindow")) as? PiPControlWindowController else { return }
+        window.showVideo(url: URL(string: "blob:https://www.youtube.com/0c91a655-dc4c-4425-a7c6-9def5bf72c9f")!, seconds: 0.0)
     }
     
     @objc func handleURL(event: NSAppleEventDescriptor, reply: NSAppleEventDescriptor) {
         
-        let window = NSStoryboard(name : NSStoryboard.Name(rawValue: "Main"), bundle: nil).instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "mainWindow")) as! PiPControlWindowController
+        let window = NSStoryboard(name : NSStoryboard.Name("Main"), bundle: nil).instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("mainWindow")) as! PiPControlWindowController
 
         let url = URL(string: (event.paramDescriptor(forKeyword: keyDirectObject)?.stringValue)!)
+        NSLog(url?.absoluteString ?? "handle url")
         let queryUrl: String = ((url?.queryParameters?["url"]!)!).removingPercentEncoding!
-        let startTimeString: String = (url?.queryParameters?["time"])!
-        var startTime: Float = 0.0;
-
-        if (startTimeString != "" || startTimeString != "undefined") {
-            startTime = Float(startTimeString)!
-        }
+        let startTime: Float = 0.0;
 
         //print("Received URL: \(queryUrl)")
         //print("Start at: \(startTime)")

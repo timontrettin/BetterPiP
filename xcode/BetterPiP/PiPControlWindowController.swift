@@ -21,10 +21,12 @@ final class PiPControlWindowController: NSWindowController {
     }
     
     func showVideo(url: URL, seconds: Float) {
+        
+        NSLog("controller window controller", url.absoluteString)
         if (mainVC !== nil) {
 //            mainVC.dismiss(nil)
         } else {
-        mainVC = NSStoryboard(name:NSStoryboard.Name(rawValue: "Main"), bundle: nil).instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "mainWindowVC")) as! PiPControlViewController
+            mainVC = NSStoryboard(name:NSStoryboard.Name("Main"), bundle: nil).instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("mainWindowVC")) as? PiPControlViewController
         self.window?.contentViewController = mainVC
         }
         mainVC.playVideo(videoUrl: url, seconds: seconds)

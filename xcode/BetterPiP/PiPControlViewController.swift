@@ -31,13 +31,15 @@ final class PiPControlViewController: NSViewController {
     }()
     
     func playVideo(videoUrl: URL, seconds: Float) {
+        NSLog(videoUrl.absoluteString)
+        
         if (player !== nil && (player?.isPlaying)!) {
             player?.pause()
         }
         
         player = AVPlayer(url: videoUrl)
         
-        let targetTime: CMTime = CMTimeMakeWithSeconds(Float64(seconds), Int32(NSEC_PER_SEC));
+        let targetTime: CMTime = CMTimeMakeWithSeconds(Float64(seconds), preferredTimescale: Int32(NSEC_PER_SEC));
         player?.seek(to: targetTime)
         
         playerView.player = player;
